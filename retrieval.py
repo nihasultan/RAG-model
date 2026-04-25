@@ -22,7 +22,7 @@ def build_index(chunks):
     return index, embeddings
 
 
-def retrieve(query, chunks, index, k=3):
+def retrieve(query, chunks, index, k=5):
     query_embedding = model.encode(
         [query],
         convert_to_numpy=True,
