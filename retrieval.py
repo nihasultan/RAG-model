@@ -14,16 +14,16 @@ def build_index(chunks):
         show_progress_bar=False
     )
 
+    embeddings = embeddings.astype("float32")  
+
     index = faiss.IndexFlatL2(embeddings.shape[1])
-    index.add(embeddings.astype("float32"))
+    index.add(embeddings)
 
     return index, embeddings
 
 def retrieve(query, chunks, index, k=5):  
-    query_embedding = model.encode(
-        [query],
-        convert_to_numpy=True
-    )
+    query_embedding = model.encode([query], convert_to_numpy=True)
+    query_embedding = query_embedding.astype("float32")
 
     distances, indices = index.search(query_embedding.astype("float32"), k)
 

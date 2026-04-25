@@ -1,25 +1,10 @@
-import os
-import requests
-import streamlit as st
+from transformers import pipeline
 
-API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-base"
-HEADERS = {
-    "Authorization": f"Bearer {st.secrets['HUGGINGFACE_API_KEY']}"
-}
-
-def query_hf(payload):
-    response = requests.post(API_URL, headers=HEADERS, json=payload)
-
-    # debug info
-    if response.status_code != 200:
-        print("HF ERROR:", response.status_code, response.text)
-        return {"error": response.text}
-
-    try:
-        return response.json()
-    except:
-        print("Non-JSON response:", response.text)
-        return {"error": "Invalid response from HF"}
+# Load once (cached by Streamlit automatically)
+generator = pipeline(
+    "text2text-generation",
+    model="google/flan-t5-small",  # 🔥 small = fast + deployable
+)
 
 def generate_answer(query, docs):
     context = "\n\n".join([d.get("text", "") for d in docs])
@@ -38,17 +23,10 @@ Question:
 Answer:
 """
 
-    output = query_hf({
-        "inputs": prompt,
-        "parameters": {
-            "max_new_tokens": 500,
-            "temperature": 0.3
-        }
-    })
-    if isinstance(output, dict) and "error" in output:
-        return "Model is loading or API error. Please try again in a few seconds."
+    result = generator(
+        prompt,
+        max_new_tokens=500,
+        do_sample=False
+    )
 
-    try:
-        return output[0]["generated_text"]
-    except:
-        return "Error generating answer. Try again."
+    return result[0]["generated_text"]
