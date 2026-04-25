@@ -1,27 +1,25 @@
-from openai import OpenAI
-import os
+from transformers import pipeline
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+generator = pipeline(
+    "text-generation",
+    model="google/flan-t5-base",
+    max_new_tokens=300
+)
 
-def generate_answer(query, retrieved_docs):
-    context = "\n".join([doc["text"] for doc in retrieved_docs])
+def generate_answer(query, docs):
+    context = "\n".join([d.page_content for d in docs])
 
     prompt = f"""
-Answer the question based ONLY on the context below.
+    Answer the question based on the context below.
 
-Context:
-{context}
+    Context:
+    {context}
 
-Question:
-{query}
+    Question:
+    {query}
 
-Give a detailed answer in 5-6 points.
-"""
+    Answer:
+    """
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.7
-    )
-
-    return response.choices[0].message.content
+    response = generator(prompt)[0]["generated_text"]
+    return response
