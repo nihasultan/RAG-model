@@ -6,14 +6,16 @@ generator = pipeline(
 )
 
 def generate_answer(query, docs):
-    context = "\n\n".join([d.get("text", "") for d in docs])
+    context = "\n\n".join(
+        [d.get("text", "")[:500] for d in docs[:3]]
+    )
 
     prompt = f"""
 You are an expert assistant.
 
-Answer the question using ONLY the context below.
+Answer ONLY using the context.
 
-Write the answer in clear bullet points.
+Write 4–6 detailed bullet points.
 
 Context:
 {context}
@@ -23,9 +25,10 @@ Question:
 
 Answer:
 """
+
     result = generator(
         prompt,
-        max_new_tokens=300,
+        max_new_tokens=500,
         do_sample=False
     )
 
@@ -39,4 +42,4 @@ Answer:
         if line:
             cleaned.append(f"- {line}")
 
-    return "\n".join(cleaned)
+    return "\n\n".join(cleaned)
