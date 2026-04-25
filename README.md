@@ -1,31 +1,51 @@
-📄 Ask My Docs – Production RAG Application
+# 📄 Ask My Docs – Production RAG Application
 
 An end-to-end Retrieval-Augmented Generation (RAG) system that allows users to query documents using natural language.
 
- Features
+# Overview
 
-- Hybrid Retrieval (BM25 + FAISS vector search)
-- Cross-Encoder Reranking (MS MARCO MiniLM)
-- Local LLM inference using TinyLlama via Ollama
-- Source-grounded answers with citations
-- Streamlit UI with file upload support
-- Retrieval evaluation pipeline
+Ask My Docs is designed to solve a common problem:
+How do you efficiently extract relevant information from large, unstructured documents?
 
-Architecture
+This system allows users to:
 
-Query  
-→ Hybrid Search (BM25 + Vector)  
-→ Reranking  
-→ Context Construction  
-→ Local LLM  
-→ Answer + Sources  
+-Ask natural language questions over PDFs
+-Retrieve contextually relevant chunks
+-Generate accurate, grounded answers using LLMs
 
-Tech Stack
+# Key Features
 
-Python, Streamlit, FAISS, Sentence Transformers, BM25, Ollama
+🔍 Semantic Search over document content
+⚡ Hybrid Retrieval using BM25 + FAISS
+🎯 Cross-Encoder Reranking for improved relevance
+📄 Multi-document Querying
+💬 LLM-based Answer Generation with context grounding
+🖥️ Interactive UI built with Streamlit
 
-Run Locally
+# System Architecture
+The pipeline consists of the following stages:
 
+1. Document Ingestion - PDF parsing and text extraction. Chunking into smaller, context-preserving segments.
+2. Embedding & Indexing - Dense embeddings generated for each chunk and stored in FAISS for efficient vector search.
+3. Hybrid Retrieval - BM25 for keyword-based retrieval and FAISS for semantic similarity search.
+4. Reranking - Cross-Encoder model ranks retrieved chunks based on relevance.
+5. Response Generation - Top-ranked chunks passed to LLM. Generates context-aware, grounded answers.
+
+# Tech Stack
+Language: Python
+Retrieval: FAISS, BM25
+LLM Integration: LLM APIs (OpenAI API, local:tinyllama)
+Frontend: Streamlit
+
+Setup Instructions
+# Clone the repository
+git clone https://github.com/nihasultan/<repo-name>.git
+
+# Navigate to project directory
+cd <repo-name>
+
+# Install dependencies
 pip install -r requirements.txt
-ollama pull tinyllama
+
+# Run the application
 streamlit run app.py
