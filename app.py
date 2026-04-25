@@ -2,7 +2,9 @@ import streamlit as st
 from ingestion import process_uploaded_file
 from pipeline import initialize, ask
 
-st.title("📄 Ask Your PDF")
+st.set_page_config(page_title="Ask My Docs", layout="wide")
+
+st.title("📄 Ask My Docs")
 
 uploaded_file = st.file_uploader("Upload a PDF", type="pdf")
 
