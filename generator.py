@@ -46,7 +46,7 @@ Answer:
         }
     })
     if isinstance(output, dict) and "error" in output:
-    return "Model is loading or API error. Please try again in a few seconds."
+        return "Model is loading or API error. Please try again in a few seconds."
 
     try:
         return output[0]["generated_text"]
