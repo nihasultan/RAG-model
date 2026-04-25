@@ -2,7 +2,7 @@ from transformers import pipeline
 
 generator = pipeline(
     "text2text-generation",
-    model="google/flan-t5-base",  
+    model="google/flan-t5-base",
 )
 
 def generate_answer(query, docs):
@@ -11,11 +11,9 @@ def generate_answer(query, docs):
     prompt = f"""
 You are an expert assistant.
 
-Your job is to answer the question using ONLY the context below.
+Answer the question using ONLY the context below.
 
-Write a detailed answer using bullet points.
-
-Each bullet should contain real information from the context.
+Write the answer in clear bullet points.
 
 Context:
 {context}
@@ -25,13 +23,19 @@ Question:
 
 Answer:
 """
+    result = generator(
+        prompt,
+        max_new_tokens=300,
+        do_sample=False
+    )
 
     text = result[0]["generated_text"]
-    lines = text.split("-")
+
+    lines = text.split("\n")
 
     cleaned = []
     for line in lines:
-        line = line.strip()
+        line = line.strip("- ").strip()
         if line:
             cleaned.append(f"- {line}")
 
